@@ -1,0 +1,17 @@
+{
+    "name": "IdaelDev.AdvancedLogger.Samples",
+    "rootNamespace": "IdaelDev.AdvancedLogger.Samples",
+    "references": [
+        "GUID:9f14c5d8b39be6a45b3ebfa904d067b9",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
