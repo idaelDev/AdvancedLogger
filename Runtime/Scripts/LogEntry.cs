@@ -31,7 +31,7 @@ namespace IdaelDev.AdvancedLogger
         {
             return $"[{Timestamp:HH:mm:ss}] [{Level}] [{CallerClass}.{CallerMethod}:{LineNumber}] {Message}";
         }
-        
+
         public UnityEngine.Color GetColor()
         {
             switch (Level)
