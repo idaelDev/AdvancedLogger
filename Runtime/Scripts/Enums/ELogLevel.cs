@@ -1,8 +1,5 @@
 namespace IdaelDev.AdvancedLogger
 {
-    /// <summary>
-    /// Niveaux de gravité des logs
-    /// </summary>
     public enum ELogLevel
     {
         Debug = 0,

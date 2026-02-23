@@ -2,9 +2,6 @@ using System;
 
 namespace IdaelDev.AdvancedLogger
 {
-    /// <summary>
-    /// Représente une entrée de log avec toutes ses métadonnées
-    /// </summary>
     public class LogEntry
     {
         public ELogLevel Level { get; set; }
@@ -25,25 +22,16 @@ namespace IdaelDev.AdvancedLogger
             Timestamp = DateTime.Now;
         }
 
-        /// <summary>
-        /// Retourne le message formaté avec le préfixe
-        /// </summary>
         public string GetFormattedMessage()
         {
             return $"[{CallerClass}] {Message}";
         }
 
-        /// <summary>
-        /// Retourne le message complet avec timestamp et informations de debug
-        /// </summary>
         public string GetDetailedMessage()
         {
             return $"[{Timestamp:HH:mm:ss}] [{Level}] [{CallerClass}.{CallerMethod}:{LineNumber}] {Message}";
         }
-
-        /// <summary>
-        /// Retourne la couleur associée au niveau de log
-        /// </summary>
+        
         public UnityEngine.Color GetColor()
         {
             switch (Level)

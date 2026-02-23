@@ -6,13 +6,13 @@ using UnityEngine.InputSystem;
 namespace IdaelDev.AdvancedLogger
 {
     /// <summary>
-    /// Console in-game pour visualiser les logs
+    /// In Game console
     /// </summary>
     public class InGameConsole : MonoBehaviour
     {
 
         [Header("Configuration")]
-        [SerializeField] private KeyCode toggleKey = KeyCode.BackQuote; // Touche ~ (backtick)
+        [SerializeField] private KeyCode toggleKey = KeyCode.BackQuote;
         [SerializeField] private bool startVisible;
 
         [Header("Apparence")]
@@ -182,7 +182,7 @@ namespace IdaelDev.AdvancedLogger
             }
             else
             {
-                // Limiter le nombre de logs affichés pour les performances
+                // Limit log visibility for performances
                 var visibleLogs = logs.Skip(Mathf.Max(0, logs.Count - maxVisibleLogs)).ToList();
 
                 foreach (var log in visibleLogs)
@@ -205,7 +205,7 @@ namespace IdaelDev.AdvancedLogger
 
             GUILayout.Label(message, _logStyle);
 
-            // Si on clique sur un log, afficher les détails
+            // Relog the stack trace on clicking details
             if (GUILayout.Button("Details", GUILayout.Width(80)))
             {
                 Debug.Log(log.GetDetailedMessage());
@@ -222,10 +222,10 @@ namespace IdaelDev.AdvancedLogger
         {
             var logs = Log.History.ToList();
 
-            // Filtrer par niveau (afficher ce niveau et tous ceux au-dessus)
+            // Maximum level filter
             logs = logs.Where(l => l.Level >= _filterLevel).ToList();
 
-            // Filtrer par recherche
+            // Search
             if (!string.IsNullOrEmpty(_searchFilter))
             {
                 logs = logs.Where(l =>
@@ -258,7 +258,7 @@ namespace IdaelDev.AdvancedLogger
             if (Keyboard.current == null)
                 return false;
 
-            // Conversion KeyCode → Key
+            // key Conversion for Unity schizophrenic Input System
             if (System.Enum.TryParse(toggleKey.ToString(), out Key newKey))
             {
                 return Keyboard.current[newKey].wasPressedThisFrame;

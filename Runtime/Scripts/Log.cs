@@ -7,26 +7,22 @@ using UnityEngine;
 namespace IdaelDev.AdvancedLogger
 {
     /// <summary>
-    /// Système de logging amélioré pour Unity
+    /// Unity Debug.Log Wrapper
     /// </summary>
     public static class Log
     {
         private static readonly List<LogEntry> _logHistory = new List<LogEntry>();
         private static readonly object _lock = new object();
-        private static bool _isProduction;
 
-        /// <summary>
-        /// Active ou désactive le mode production (désactive les logs sauf erreurs)
-        /// </summary>
-        public static bool IsProductionMode
+        public static bool IsProduction
         {
-            get => _isProduction;
-            set => _isProduction = value;
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            get => false;
+            #else
+            get => true;
+            #endif
         }
 
-        /// <summary>
-        /// Obtient l'historique complet des logs
-        /// </summary>
         public static IReadOnlyList<LogEntry> History
         {
             get
@@ -38,14 +34,8 @@ namespace IdaelDev.AdvancedLogger
             }
         }
 
-        /// <summary>
-        /// Événement déclenché quand un nouveau log est ajouté
-        /// </summary>
         public static event Action<LogEntry> OnLogAdded;
 
-        /// <summary>
-        /// Vide l'historique des logs
-        /// </summary>
         public static void Clear()
         {
             lock (_lock)
@@ -56,10 +46,7 @@ namespace IdaelDev.AdvancedLogger
 
         #region Public Logging Methods
 
-        /// <summary>
-        /// Log de debug (désactivé en production)
-        /// </summary>
-        [Conditional("DEBUG")]
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [HideInCallstack]
         public static void Debug(
             object message,
@@ -67,13 +54,11 @@ namespace IdaelDev.AdvancedLogger
             [CallerFilePath] string filePath = "",
             [CallerLineNumber] int lineNumber = 0)
         {
-            if (_isProduction) return;
+            if (IsProduction) return;
             LogInternal(ELogLevel.Debug, message?.ToString() ?? "null", filePath, memberName, lineNumber);
         }
 
-        /// <summary>
-        /// Log d'information (désactivé en production)
-        /// </summary>
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [HideInCallstack]
         public static void Info(
             object message,
@@ -81,13 +66,11 @@ namespace IdaelDev.AdvancedLogger
             [CallerFilePath] string filePath = "",
             [CallerLineNumber] int lineNumber = 0)
         {
-            if (_isProduction) return;
+            if (IsProduction) return;
             LogInternal(ELogLevel.Info, message?.ToString() ?? "null", filePath, memberName, lineNumber);
         }
 
-        /// <summary>
-        /// Log d'avertissement (désactivé en production)
-        /// </summary>
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD")]
         [HideInCallstack]
         public static void Warning(
             object message,
@@ -95,13 +78,10 @@ namespace IdaelDev.AdvancedLogger
             [CallerFilePath] string filePath = "",
             [CallerLineNumber] int lineNumber = 0)
         {
-            if (_isProduction) return;
+            if (IsProduction) return;
             LogInternal(ELogLevel.Warning, message?.ToString() ?? "null", filePath, memberName, lineNumber);
         }
 
-        /// <summary>
-        /// Log d'erreur (TOUJOURS actif, même en production)
-        /// </summary>
         [HideInCallstack]
         public static void Error(
             object message,
@@ -112,9 +92,7 @@ namespace IdaelDev.AdvancedLogger
             LogInternal(ELogLevel.Error, message?.ToString() ?? "null", filePath, memberName, lineNumber);
         }
 
-        /// <summary>
-        /// Log d'erreur fatale (TOUJOURS actif, même en production)
-        /// </summary>
+
         [HideInCallstack]
         public static void Fatal(
             object message,
@@ -125,9 +103,6 @@ namespace IdaelDev.AdvancedLogger
             LogInternal(ELogLevel.Fatal, message?.ToString() ?? "null", filePath, memberName, lineNumber);
         }
 
-        /// <summary>
-        /// Log d'exception (TOUJOURS actif, même en production)
-        /// </summary>
         [HideInCallstack]
         public static void Exception(
             Exception exception,
@@ -166,7 +141,6 @@ namespace IdaelDev.AdvancedLogger
             {
                 _logHistory.Add(entry);
 
-                // Limiter l'historique à 1000 entrées pour éviter les problèmes de mémoire
                 if (_logHistory.Count > 1000)
                 {
                     _logHistory.RemoveAt(0);
@@ -208,23 +182,6 @@ namespace IdaelDev.AdvancedLogger
 
         #endregion
 
-        #region Conditional Compilation
 
-        /// <summary>
-        /// Configure automatiquement le mode production basé sur les symboles de compilation
-        /// </summary>
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
-        {
-#if UNITY_EDITOR
-            _isProduction = false;
-#elif DEVELOPMENT_BUILD
-            _isProduction = false;
-#else
-            _isProduction = true;
-#endif
-        }
-
-        #endregion
     }
 }
